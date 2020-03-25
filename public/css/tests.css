@@ -1,0 +1,23 @@
+.myGrid{
+    display: inline-grid;
+    columns: 3;
+    height: 4rem;
+    grid-template-columns: 2fr 25fr 1fr
+}
+
+.itemGrid{
+    display: inline;
+}
+
+.contentImg{
+    justify-content: center;
+    margin: 0.5rem;
+}
+
+.contenedor{
+    display: inline-grid;
+    columns: 2;
+    grid-template-columns: 65% 35%;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

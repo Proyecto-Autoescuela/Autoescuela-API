@@ -1,0 +1,266 @@
+@extends('layouts.app')
+
+
+@section('header')
+<ul class="nav justify-content-center">
+    <div class="nav " id="nav-tab" role="tablist">
+        <a class="nav-link" id="nav-users-tab" data-toggle="tab" role="tab" aria-controls="nav-users" aria-selected="false" href="#" onclick="location.href = '{{ route('users') }}'">USUARIOS</a>
+        <a class="nav-link active" id="nav-users-tab" data-toggle="tab" role="tab" aria-controls="nav-users" aria-selected="true" href="#" onclick="location.href = '{{ route('units') }}'">TEMAS</a>
+        <a class="nav-link" id="nav-users-tab" data-toggle="tab" role="tab" aria-controls="nav-users" aria-selected="false" href="#" onclick="location.href = '{{ route('tests') }}'">TESTS</a>
+    </div>
+</ul>
+@endsection
+
+@section('styles')
+    <link href="{{ asset('css/units.css') }}" rel="stylesheet">
+@endsection
+
+@php 
+$i = 1
+ @endphp
+@php
+ $units = \App\Unit::all() 
+ @endphp
+
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">TEMAS</div>
+                <div class="card-body">
+                    <form action="{{ action('UnitController@listByName') }}" method="GET" role="search">
+                        <div class="input-group mb-3">
+                            <input required type="text" class="form-control" placeholder="Introduce el nombre del tema" name="name" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <input type="submit" class="btn btn-outline-secondary" type="button" value="Buscar"/>
+                                <div class="dropdown">
+                                    <input class="btn btn-outline-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="Añadir" />
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                      <a class="dropdown-item" data-toggle="modal" data-target="#addModal" href="">Tema</a>
+                                      <a class="dropdown-item" data-toggle="modal" data-target="#addModalContent" href="">Contenido</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    @if(isset($unit))
+                        @foreach($unit as $response)
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            <h5>Tema {{$response->id}}: {{$response->name}}       <img width="10%" src="{{ URL::to('../') }}/storage/app/public/{{$response->img}}"/></h5>
+                                            <button class="open-deleteDialog close" data-name="{{$response->name}}" data-id="{{$response->id}}" type="button" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </button>
+                                        </h5>
+                                    </div>
+                                    @foreach($response->contents as $uc)
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body">
+                                            <p style="font-weight: bold">{{$response->id}}.{{$i++}} {{$uc->name}}</p>
+                                            <img width="40%"  src="{{ URL::to('../') }}/storage/app/public/{{$uc->img}}"/>
+                                            <p>{{$uc->content_unit}}</p>
+                                        </div>
+                                    </div>
+                                    @endforeach 
+                                </div>
+                            </div>
+                            <input type="hidden"{{$i = 1}} />
+                        @endforeach
+                    @else
+                        @foreach($units as $u)
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header myGrid" id="headingOne">
+                                        <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$u->img}}"/>
+                                        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            <h5 class="mb-0" style="float: left">Tema {{$u->id}}: {{$u->name}}</h5>
+                                        </button>
+                                        <input class="btn btn-outline-primary" type="button" value="Modificar"/>
+                                        <button class="open-deleteDialog close" data-name="{{$u->name}}" data-id="{{$u->id}}" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    @foreach($u->contents as $uc)
+                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body">
+                                        <div class="itemGrid">
+                                            <b>{{$u->id}}.{{$i++}} {{$uc->name}}</b>
+                                            <button class="open-deleteContent close" type="button" data-name="{{$uc->name}}" data-id="{{$uc->id}}">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="contenedor">
+                                            <p>@php echo $uc->content_unit @endphp</p>
+                                            <img class="contentImg" width="100%" src="{{ URL::to('../') }}/storage/app/public/{{$uc->img}}"/>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="submit" class="btn btn-light" value="Modificar"/>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    @endforeach 
+                                </div>
+                            </div>
+                            <input type="hidden"{{$i = 1}} />
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{{--Modal for add a unit--}}
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Añadir tema</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{{ action('UnitController@addUnit') }}" role="form" enctype="multipart/form-data">
+                <div class="form-group mb-2">
+                    <p>Titulo: </p>
+                  </div>
+                  <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Titulo" name="name" required>
+                  </div>
+                  <div class="form-group mb-2">
+                    <p>Imagen:</p><img id="uploadPreview" style="max-width: 250px; display:block; margin:auto;"/>
+                  </div>
+                  <div class="form-group mx-sm-3 mb-2">
+                    <input name="img" type="file" id="uploadImage" class="form-control-file" accept="image/*" required onchange="PreviewImage();">
+                  </div>
+                  <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
+                <div class="modal-footer">
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Añadir"/>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+{{--Modal for add a unit_content--}}
+<div class="modal fade" id="addModalContent" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Añadir contenido tema</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{{ action('UnitContentController@addUnitContent') }}" role="form" enctype="multipart/form-data">
+                <p>Selecciona el tema a donde se va a añadir</p>
+                <select class="form-control" style="max-width: 41rem" name="id" aria-describedby="basic-addon2" required>
+                    <option value=""></option>
+                    @foreach($units as $u)
+                        <option value="{{$u->id}}">Tema {{$u->id}}: {{$u->name}}</option>
+                    @endforeach
+                </select>
+                <br>
+                <div class="form-group mb-2">
+                    <p>Titulo: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Titulo" name="name" required>
+                </div>
+                <div class="form-group mb-2">
+                    <p>Imagen:</p><img id="uploadPreview" style="max-width: 250px; display:block; margin:auto;"/>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input name="img" type="file" id="uploadImage" class="form-control-file" accept="image/*" required onchange="PreviewImage();">
+                </div>
+                <div class="form-group mb-2">
+                    <p>Texto: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <textarea name="content_unit"> </textarea>
+                      <script>
+                        tinymce.init({
+                        selector: 'textarea',
+                       toolbar_drawer: 'floating',
+                        });
+                      </script>
+                </div>     
+                <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
+                <div class="modal-footer">
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Añadir"/>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+{{--Modal for update a unit--}}
+
+
+{{--Modal for update a unit_content--}}
+
+{{--Modal for delete a unit--}}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Eliminar tema</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="{{ action('UnitController@deleteUnit') }}" role="form">
+            {{ method_field('DELETE') }}
+            <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
+            <div class="modal-body">
+                <input type="hidden" id="userID" name="userID" value="">
+                <p id="userName"></p>
+            <div class="modal-footer">  
+                <input style="margin-top: 1rem" type="button" class="btn btn-light" value="Cancelar" data-dismiss="modal"/>
+                <input id='delete' style="margin-top: 1rem" type="submit" class="btn btn-danger deleteUser" value="Eliminar">
+            </div>
+        </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{--Modal for delete a unit_content--}}
+<div class="modal fade" id="deleteContentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Eliminar contenido de tema</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="{{ action('UnitContentController@deleteUnitContent') }}" role="form">
+            {{ method_field('DELETE') }}
+            <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
+            <div class="modal-body">
+                <input type="hidden" id="contentID" name="contentID" value="">
+                <p id="contentName"></p>
+            <div class="modal-footer">  
+                <input style="margin-top: 1rem" type="button" class="btn btn-light" value="Cancelar" data-dismiss="modal"/>
+                <input id='delete' style="margin-top: 1rem" type="submit" class="btn btn-danger deleteUser" value="Eliminar">
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+@endsection
