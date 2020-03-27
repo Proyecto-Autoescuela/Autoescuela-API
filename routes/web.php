@@ -55,10 +55,9 @@ Route::middleware('auth:web')->put('/units/unitcontent/update','UnitContentContr
 Route::middleware('auth:web')->delete('/units/unitcontent/delete','UnitContentController@deleteUnitContent');
 
 //Rutas funcionalidades tests
-Route::middleware('auth:web')->get('/tests/search', 'UnitContentController@listByName');
-Route::middleware('auth:web')->post('/tests/add','UnitContentController@addTest');
-Route::middleware('auth:web')->put('/tests/update','UnitContentController@updateTest');
-Route::middleware('auth:web')->delete('/tests/delete','UnitContentController@deleteTest');
+Route::middleware('auth:web')->post('/tests/add','TestController@addTest');
+Route::middleware('auth:web')->put('/tests/update','TestController@updateTest');
+Route::middleware('auth:web')->delete('/tests/delete','TestController@deleteTest');
 
 
 Route::get('prueba', 'TestController@generateTest');

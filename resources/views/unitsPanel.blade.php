@@ -183,7 +183,7 @@ $i = 1
         <div class="modal-body">
             <form method="POST" action="{{ action('UnitContentController@addUnitContent') }}" role="form" enctype="multipart/form-data">
                 <p>Selecciona el tema a donde se va a añadir</p>
-                <select class="form-control" style="max-width: 41rem" name="id" aria-describedby="basic-addon2" required>
+                <select class="form-control mx-sm-3 mb-2" style="max-width: 27rem" name="id" aria-describedby="basic-addon2" required>
                     <option value=""></option>
                     @foreach($units as $u)
                         <option value="{{$u->id}}">Tema {{$u->id}}: {{$u->name}}</option>

@@ -24,11 +24,16 @@
 
 .testsGrid{
     display: grid;
-    columns: 2;
-    grid-template-columns: 10fr 10fr;
+    columns: 3;
+    grid-template-columns: 10fr 10fr 1fr;
     border: 1px solid grey;
     border-style: r;
     margin: 1rem;
+}
+
+.exit{
+    position:absolute;
+    right: 6%;
 }
 
 .testImage{

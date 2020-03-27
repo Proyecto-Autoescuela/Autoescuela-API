@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Test;
 use App\Question;
 use App\Student;
+use Illuminate\Support\Facades\Input;
 
 class TestController extends Controller{
 
@@ -26,6 +27,7 @@ class TestController extends Controller{
         $response = Test::where('student_id', $student_id)->get();
         return response()->json($response);
     }
+
     public function porcentajeUnit($student_id){
         $unit_id = 1;
         $response = array('error_code' => 404, 'error_msg' => 'Nombre ' .$student_id. ' no encontrado');
@@ -175,25 +177,50 @@ class TestController extends Controller{
     }
 
     // Añadir Test
-    public function addUnit(Request $req)
+    public function addTest(Request $req)
     {
         $response = array('error_code' => 400, 'error_msg' => 'Error inserting info');
-        $units = new Unit;
+        $tests = new Question;
         
-        if(!$req->name){
-            $response['error_msg'] = 'Name is required';
+        if(!$req->photo_url){
+            $response['error_msg'] = 'photo is required';
         }
-        elseif(!$req->img)
+        elseif(!$req->question)
         {
-            $response['error_msg'] = 'img is required';
+            $response['error_msg'] = 'question is required';
+        }
+        elseif(!$req->answer_a)
+        {
+            $response['error_msg'] = 'answer_a is required';
+        }
+        elseif(!$req->answer_b)
+        {
+            $response['error_msg'] = 'answer_b is required';
+        }
+        elseif(!$req->answer_c)
+        {
+            $response['error_msg'] = 'answer_c is required';
+        }
+        elseif(!$req->correct_answer)
+        {
+            $response['error_msg'] = 'correct_answer is required';
+        }
+        elseif(!$req->unit_id)
+        {
+            $response['error_msg'] = 'unit_id is required';
         }
         else
         {
             try{
-                $units->name = $req->input('name');
-                $ruta = $req->file('img')->store('ImagesUnits');
-                $units->img = $ruta;
-                $units->save();
+                $ruta = $req->file('photo_url')->store('ImagesTests');
+                $tests->photo_url = $ruta;
+                $tests->question = $req->input('question');
+                $tests->answer_a = $req->input('answer_a');
+                $tests->answer_b = $req->input('answer_b');
+                $tests->answer_c = $req->input('answer_c');
+                $tests->correct_answer = $req->input('correct_answer');
+                $tests->unit_id = $req->input('unit_id');
+                $tests->save();
                 $response = array('error_code' => 200, 'error_msg' => '');
                 
             }
@@ -202,12 +229,119 @@ class TestController extends Controller{
             }
         }
         if($response['error_code'] == 200){
-            return redirect('/units')->with('success', 'Tema añadido');
+            return redirect('/tests')->with('success', 'Test añadido');
         }else if($response['error_code'] == 500){
-            return redirect('/units')->with('error', 'Este tema ya esta añadido');
+            return redirect('/tests')->with('error', 'Este test ya esta añadido');
+        }else{
+            return redirect('/tests')->with('error', 'No se pudo procesar la petición');
+        }
+    }
+
+    // Añadir Test
+    public function updateTest(Request $req)
+    {
+        $test_id = $req->id;
+        $response = array('error_code' => 404, 'error_msg' => 'Estudiante '.$unit_id.' no encontrado');
+        $tests = Question::find($test_id);
+        if(!empty($tests)){
+            $dataOk = true;
+            $error_msg = "";
+            if(empty($req->photo_url)){
+                $dataOk = false;
+                $error_msg = "photo_url can't be empty";
+            }else{
+                $tests->photo_url = $req->photo_url;
+            }
+            if(empty($req->question)){
+                $dataOk = false;
+                $response['error_msg'] = 'question is required';
+            }else{
+                $tests->question = $req->question;
+            }
+            if(empty($req->answer_a)){
+                $dataOk = false;
+                $response['error_msg'] = 'answer_a is required';
+            }else{
+                $tests->answer_a = $req->answer_a;
+            }
+            if(empty($req->answer_b)){
+                $dataOk = false;
+                $response['error_msg'] = 'answer_b is required';
+            }else{
+                $tests->answer_b = $req->answer_b;
+            }
+            if(empty($req->answer_c)){
+                $dataOk = false;
+                $response['error_msg'] = 'answer_c is required';
+            }else{
+                $tests->answer_c = $req->answer_c;
+            }
+            if(empty($req->correct_answer)){
+                $dataOk = false;
+                $response['error_msg'] = 'correct_answer is required';
+            }else{
+                $tests->correct_answer = $req->correct_answer;
+            }
+            if(empty($req->unit_id)){
+                $dataOk = false;
+                $response['error_msg'] = 'unit_id is required';
+            }else{
+                $tests->unit_id = $req->unit_id;
+            }
+            if(!$dataOk){
+                $response = array('error_code' => 400, 'error_msg' => $error_msg);
+            }else{
+                try{
+                    $ruta = $req->file('photo_url')->store('ImagesTests');
+                    $tests->photo_url = $ruta;
+                    $tests->question = $req->input('question');
+                    $tests->answer_a = $req->input('answer_a');
+                    $tests->answer_b = $req->input('answer_b');
+                    $tests->answer_c = $req->input('answer_c');
+                    $tests->correct_answer = $req->input('correct_answer');
+                    $tests->unit_id = $req->input('unit_id');
+                    $tests->save();
+                    $response = array('error_code' => 200, 'error_msg' => '');
+                }
+                catch(\Exception $e)
+                {
+                $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
+            }
+        }
+        if($response['error_code'] == 200){
+            return redirect('/units')->with('success', 'Test editado');
+        }else if($response['error_code'] == 500){
+            return redirect('/units')->with('error', 'Error al editar');
         }else{
             return redirect('/units')->with('error', 'No se pudo procesar la petición');
         }
+        }
     }
+
+    // Eliminar Test
+    public function deleteTest(Request $req)
+    {
+        $id = $req->userID;
+        $response = array('error_code' => 404, 'error_msg' => 'Test '.$id.' no encontrado');
+        $tests = Question::find($id);
+        if(empty($tests)){
+            $response = array('error_code' => 400, 'error_msg' => "Test ".$id." no puede ser borrado");
+        }else{
+            try{
+                $tests->delete();
+                $response = array('error_code' => 200, 'error_msg' => '');
+            }catch(\Exception $e){
+                $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
+            }
+        }
+        if($response['error_code'] == 200){
+            return redirect('/tests')->with('success', 'Test eliminado');
+        }else if($response['error_code'] == 500){
+            return redirect('/tests')->with('error', 'Error al eliminar');
+        }else{
+            return redirect('/tests')->with('error', 'No se pudo procesar la petición');
+        }
+    }
+
 
 }
