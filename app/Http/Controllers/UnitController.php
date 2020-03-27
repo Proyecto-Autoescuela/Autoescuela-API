@@ -25,7 +25,7 @@ class UnitController extends Controller
         ->get(['id', 'name', 'img']);
         if(count($response) > 0)
             return view('unitsPanel', ['unit' => $response]);
-        else return view('unitsPanel')->withMessage('No Details found. Try to search again !');
+        else return redirect('/units')->with('error', 'No se han encontrado temarios con este nombre');
     }
 
     public function listByID(Request $req)
@@ -35,7 +35,7 @@ class UnitController extends Controller
         $response = Unit::where('id', $id)->get();
         if(count($response) > 0)
             return view('unitsPanel', ['unit' => $response]);
-        else return view('unitsPanel')->withMessage('No Details found. Try to search again !');
+        else return redirect('/units')->with('error', 'No se han encontrado temas con este nombre');
     }
 
     public function findByID(Request $req)
@@ -73,7 +73,13 @@ class UnitController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return view('unitsPanel');
+        if($response['error_code'] == 200){
+            return redirect('/units')->with('success', 'Tema añadido');
+        }else if($response['error_code'] == 500){
+            return redirect('/units')->with('error', 'Este tema ya esta añadido');
+        }else{
+            return redirect('/units')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
     // Editar temario
@@ -91,18 +97,32 @@ class UnitController extends Controller
             }else{
                 $units->name = $req->name;
             }
+            if(empty($req->img)){
+                $dataOk = false;
+                $response['error_msg'] = 'img is required';
+            }else{
+                $units->img = $req->img;
+            }
             if(!$dataOk){
                 $response = array('error_code' => 400, 'error_msg' => $error_msg);
             }else{
                 try{
                     $units->name = $req->input('name');
+                    $ruta = $req->file('img')->store('ImagesUnits');
+                    $units->img = $ruta;
                     $units->save();
                     $response = array('error_code' => 200, 'error_msg' => '');
                 }catch(\Exception $e){
                     $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
                 }
             }
-            return view('unitsPanel');
+            if($response['error_code'] == 200){
+                return redirect('/units')->with('success', 'Tema editado');
+            }else if($response['error_code'] == 500){
+                return redirect('/units')->with('error', 'Error al editar');
+            }else{
+                return redirect('/units')->with('error', 'No se pudo procesar la petición');
+            }
         }
     }
 
@@ -122,6 +142,12 @@ class UnitController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/units');
+        if($response['error_code'] == 200){
+            return redirect('/units')->with('success', 'Tema eliminado');
+        }else if($response['error_code'] == 500){
+            return redirect('/units')->with('error', 'Error al eliminar');
+        }else{
+            return redirect('/units')->with('error', 'No se pudo procesar la petición');
+        }
     }
 }

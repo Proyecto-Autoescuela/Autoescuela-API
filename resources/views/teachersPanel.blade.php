@@ -17,7 +17,7 @@
 @php( $teachers = \App\Teacher::all())
 
 @section('content')
-<div class="container">
+<div class="container-xl">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -51,12 +51,33 @@
                                   </tr>
                                 </thead>
                                 <tbody>
+                                    @if (session('error'))
+                                        <div class="col-sm-12">
+                                            <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                                                {{ session('error') }}
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if (session('success'))
+                                        <div class="col-sm-12">
+                                            <div class="alert  alert-success alert-dismissible fade show" role="alert">
+                                                {{ session('success') }}
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    @endif
                                     @if(isset($teacher))
+                                        <input type="button" class="btn btn-outline-secondary btn-block buttonBack" value="Volver" onclick="location.href = '{{ route('teachers') }}'"/>
                                         @foreach($teacher as $response)
                                             <tr>
                                                 <th scope="row">{{$response->id}}</th>
-                                                <td><p data-editable>{{$response->name}}</p></td>
-                                                <td><p data-editable>{{$response->email}}</p></td>
+                                                <td><p class="open-editDialog" data-id="{{$response->id}}" data-name="{{$response->name}}" data-email="{{$response->email}}">{{$response->name}}</p></td>
+                                                <td><p class="open-editDialog" data-id="{{$response->id}}" data-name="{{$response->name}}" data-email="{{$response->email}}">{{$response->email}}</p></td>
                                                 <td>
                                                     <button type="button" class="close" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
@@ -68,8 +89,8 @@
                                         @foreach($teachers as $t)
                                             <tr>
                                                 <th scope="row">{{$t->id}}</th>
-                                                <td><p data-editable>{{$t->name}}</p></td>
-                                                <td><p data-editable>{{$t->email}}</p></td>
+                                                <td><p class="open-editDialog" data-id="{{$t->id}}" data-name="{{$t->name}}" data-email="{{$t->email}}">{{$t->name}}</p></td>
+                                                <td><p class="open-editDialog" data-id="{{$t->id}}" data-name="{{$t->name}}" data-email="{{$t->email}}">{{$t->email}}</p></td>
                                                 <td>
                                                     <button class="open-deleteDialog close" data-name="{{$t->name}}" data-id="{{$t->id}}" type="button" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
@@ -104,19 +125,19 @@
                   <p>Nombre: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                <input type="text" class="form-control" placeholder="Nombre" name="name" required>
+                <input type="text" class="form-control" placeholder="Nombre" name="name" maxlength="40" required>
                 </div>
                 <div class="form-group mb-2">
                   <p>Correo: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input type="email" class="form-control" placeholder="Correo" name="email" required>
+                    <input type="email" class="form-control" placeholder="Correo" name="email" maxlength="50" required>
                 </div>
                 <div class="form-group mb-2">
                     <p>Contraseña: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input type="text" class="form-control" placeholder="Contraseña" name="password" required>
+                    <input type="text" class="form-control" placeholder="Contraseña" name="password" minlength="5" required>
                 </div>
                 <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
                 <div class="modal-footer">
@@ -129,6 +150,42 @@
     </div>
 </div>
 
+{{--Modal for edit--}}
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar profesor</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{{ action('TeacherController@updateTeacher') }}" role="form">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="form-group mb-2">
+                    <p>Nombre: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Nombre" id="name" name="name" maxlength="40" required>
+                </div>
+                <div class="form-group mb-2">
+                    <p>Correo: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="email" class="form-control" placeholder="Correo" id="email" name="email" maxlength="50" required>
+                </div>
+                <div class="modal-footer">
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Editar"/>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
 
 {{--Modal for delete--}}
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -154,31 +211,5 @@
       </div>
     </div>
 </div>
-
-<script type="text/javascript">
-    
-    $('body').on('click', '[data-editable]', function(){
-    
-    var $el = $(this);
-                
-    var $input = $('<input/>').val( $el.text() );
-    $el.replaceWith( $input );
-    
-    var save = function(){
-        var $p = $('<p data-editable />').text( $input.val() );
-        $input.replaceWith( $p );
-    };
-    
-    /**
-        We're defining the callback with `one`, because we know that
-        the element will be gone just after that, and we don't want 
-        any callbacks leftovers take memory. 
-        Next time `p` turns into `input` this single callback 
-        will be applied again.
-    */
-    $input.one('blur', save).focus();
-    
-});
-</script>
 
 @endsection

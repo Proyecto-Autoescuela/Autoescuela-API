@@ -173,4 +173,41 @@ class TestController extends Controller{
         }
         return response()->json($response);
     }
+
+    // Añadir Test
+    public function addUnit(Request $req)
+    {
+        $response = array('error_code' => 400, 'error_msg' => 'Error inserting info');
+        $units = new Unit;
+        
+        if(!$req->name){
+            $response['error_msg'] = 'Name is required';
+        }
+        elseif(!$req->img)
+        {
+            $response['error_msg'] = 'img is required';
+        }
+        else
+        {
+            try{
+                $units->name = $req->input('name');
+                $ruta = $req->file('img')->store('ImagesUnits');
+                $units->img = $ruta;
+                $units->save();
+                $response = array('error_code' => 200, 'error_msg' => '');
+                
+            }
+            catch(\Exception $e){
+                $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
+            }
+        }
+        if($response['error_code'] == 200){
+            return redirect('/units')->with('success', 'Tema añadido');
+        }else if($response['error_code'] == 500){
+            return redirect('/units')->with('error', 'Este tema ya esta añadido');
+        }else{
+            return redirect('/units')->with('error', 'No se pudo procesar la petición');
+        }
+    }
+
 }

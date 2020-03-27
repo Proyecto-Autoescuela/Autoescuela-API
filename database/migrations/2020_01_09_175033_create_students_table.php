@@ -20,7 +20,7 @@ class CreateStudentsTable extends Migration
             $table->string('email', 50)->unique();
             $table->string('password');
             $table->unsignedBigInteger('teacher_id');
-            $table->foreign('teacher_id')->references('id')->on('teachers')->onDelete('cascade');
+            $table->foreign('teacher_id')->references('id')->on('teachers');
             $table->enum('license',['A', 'A1', 'A2','B','B+E','C', 'C+E','D', 'D+E']);
             $table->timestamps();
         });

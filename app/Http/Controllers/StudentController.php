@@ -32,7 +32,7 @@ class StudentController extends Controller
         ->get(['id', 'name', 'email', 'teacher_id', 'license']);
         if(count($response) > 0)
             return view('home', ['student' => $response]);
-        else return view('home')->withMessage('No Details found. Try to search again !');
+        else return redirect('/users')->with('error', 'No se han encontrado alumnos con este nombre');
     }
 
     public function listByTeacher($id)
@@ -94,7 +94,14 @@ class StudentController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/users');
+        if($response['error_code'] == 200){
+            return redirect('/users')->with('success', 'Usuario añadido');
+        }else if($response['error_code'] == 500){
+            return redirect('/users')->with('error', 'Este correo ya esta en uso');
+        }else{
+            return redirect('/users')->with('error', 'No se pudo procesar la petición');
+        }
+            
     }
 
     // Editar estudiante
@@ -144,7 +151,13 @@ class StudentController extends Controller
                     $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
                 }
             }
-            return response() -> json($response);
+            if($response['error_code'] == 200){
+                return redirect('/users')->with('success', 'Usuario modificado');
+            }else if($response['error_code'] == 500){
+                return redirect('/users')->with('error', 'Error al editar');
+            }else{
+                return redirect('/users')->with('error', 'No se pudo procesar la petición');
+            }
         }
     }
 
@@ -167,7 +180,13 @@ class StudentController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/users');
+        if($response['error_code'] == 200){
+            return redirect('/users')->with('success', 'Usuario eliminado');
+        }else if($response['error_code'] == 500){
+            return redirect('/users')->with('error', 'Error al eliminar');
+        }else{
+            return redirect('/users')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
 

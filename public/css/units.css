@@ -2,7 +2,8 @@
     display: inline-grid;
     columns: 4;
     height: 4rem;
-    grid-template-columns: 2fr 22fr 2fr 1fr
+    grid-template-columns: 2fr 22fr 2fr 1fr;
+    padding-bottom: 1rem;
 }
 
 .itemGrid{

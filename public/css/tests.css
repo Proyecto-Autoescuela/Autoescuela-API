@@ -2,7 +2,7 @@
     display: inline-grid;
     columns: 3;
     height: 4rem;
-    grid-template-columns: 2fr 25fr 1fr
+    grid-template-columns: 2fr 25fr
 }
 
 .itemGrid{
@@ -20,4 +20,21 @@
     grid-template-columns: 65% 35%;
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+
+.testsGrid{
+    display: grid;
+    columns: 2;
+    grid-template-columns: 10fr 10fr;
+    border: 1px solid grey;
+    border-style: r;
+    margin: 1rem;
+}
+
+.testImage{
+    padding: 1rem;
+}
+
+.testContent{
+
 }

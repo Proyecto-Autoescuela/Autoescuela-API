@@ -28,7 +28,7 @@ class UserController extends Controller
         ->get(['id', 'name', 'email']);
         if(count($response) > 0)
             return view('adminsPanel', ['admin' => $response]);
-        else return view('adminsPanel')->withMessage('No Details found. Try to search again !');
+        else return redirect('/users/admins')->with('error', 'No se han encontrado administradores con este nombre');
     }
     
     public function addAdmin(Request $req)
@@ -62,7 +62,13 @@ class UserController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return view('adminsPanel');
+        if($response['error_code'] == 200){
+            return redirect('/users/admins')->with('success', 'Usuario añadido');
+        }else if($response['error_code'] == 500){
+            return redirect('/users/admins')->with('error', 'Este correo ya esta en uso');
+        }else{
+            return redirect('/users/admins')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
     public function updateAdmin(Request $req)
@@ -85,26 +91,25 @@ class UserController extends Controller
             }else{
                 $users->email = $req->email;
             }
-            if(empty($req->password)){
-                $dataOk = false;
-                $error_msg = "Paswword no puede estar vacio";
-            }else{
-                $users->password = $req->password;
-            }
             if(!$dataOk){
                 $response = array('error_code' => 400, 'error_msg' => $error_msg);
             }else{
                 try{
                     $users->name = $req->input('name');
                     $users->email = $req->input('email') ;
-                    $users->password = Hash::make($req->password);
                     $users->save();
                     $response = array('error_code' => 200, 'error_msg' => '');
                 }catch(\Exception $e){
                     $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
                 }
             }
-        return view('adminsPanel');
+            if($response['error_code'] == 200){
+                return redirect('/users/admins')->with('success', 'Usuario modificado');
+            }else if($response['error_code'] == 500){
+                return redirect('/users/admins')->with('error', 'Error al editar');
+            }else{
+                return redirect('/users/admins')->with('error', 'No se pudo procesar la petición');
+            }
         }
     }
 
@@ -123,6 +128,12 @@ class UserController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return view('adminsPanel');
+        if($response['error_code'] == 200){
+            return redirect('/users/admins')->with('success', 'Usuario eliminado');
+        }else if($response['error_code'] == 500){
+            return redirect('/users/admins')->with('error', 'Error al eliminar');
+        }else{
+            return redirect('/users/admins')->with('error', 'No se pudo procesar la petición');
+        }
     }
 }

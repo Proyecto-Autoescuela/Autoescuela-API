@@ -68,7 +68,6 @@ class UnitContentController extends Controller
         elseif(!$req->id)
         {
             $response['error_msg'] = 'unit_id is required';
-            // $response = $req;
         }
         else
         {
@@ -85,7 +84,13 @@ class UnitContentController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/units');
+        if($response['error_code'] == 200){
+            return redirect('/units')->with('success', 'Punto añadido');
+        }else if($response['error_code'] == 500){
+            return redirect('/units')->with('error', 'Este punto ya esta añadido');
+        }else{
+            return redirect('/units')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
     // Editar temario
@@ -136,7 +141,13 @@ class UnitContentController extends Controller
                     $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
                 }
             }
-            return view('unitsPanel');
+            if($response['error_code'] == 200){
+                return redirect('/units')->with('success', 'Punto editado');
+            }else if($response['error_code'] == 500){
+                return redirect('/units')->with('error', 'Error al editar');
+            }else{
+                return redirect('/units')->with('error', 'No se pudo procesar la petición');
+            }
         }
     }
 
@@ -156,7 +167,13 @@ class UnitContentController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/units');
+        if($response['error_code'] == 200){
+            return redirect('/units')->with('success', 'Punto eliminado');
+        }else if($response['error_code'] == 500){
+            return redirect('/units')->with('error', 'Error al eliminar');
+        }else{
+            return redirect('/units')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
 }

@@ -23,13 +23,12 @@ Route::middleware('auth:web')->get('/users/teachers', 'HomeController@teachers')
 Route::middleware('auth:web')->get('/users/admins', 'HomeController@admins')->name('admins');
 Route::middleware('auth:web')->get('/units', 'HomeController@units')->name('units');
 Route::middleware('auth:web')->get('/tests', 'HomeController@tests')->name('tests');
-Route::middleware('auth:web')->get('/options', 'HomeController@options')->name('options');
 
 // Rutas funcionalidades students
-Route::middleware('auth:web')->get('/users/students/search', 'StudentController@listByName');
-Route::middleware('auth:web')->post('/users/students/add','StudentController@addStudent');
-// Route::middleware('auth:web')->put('/users/students/modify','StudentController@updateStudent');
-Route::middleware('auth:web')->delete('/users/students/delete','StudentController@deleteStudent');
+Route::middleware('auth:web')->get('/users/search', 'StudentController@listByName');
+Route::middleware('auth:web')->post('/users/add','StudentController@addStudent');
+Route::middleware('auth:web')->put('/users/modify','StudentController@updateStudent');
+Route::middleware('auth:web')->delete('/users/delete','StudentController@deleteStudent');
 
 // Rutas funcionalidades teachers
 Route::middleware('auth:web')->get('/users/teachers/search', 'TeacherController@listByName');

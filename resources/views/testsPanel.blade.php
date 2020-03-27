@@ -20,7 +20,7 @@
 @php( $ques = \App\Question::all())
 
 @section('content')
-<div class="container">
+<div class="container-xl">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -40,37 +40,40 @@
                         @endforeach
                     @else
                         @foreach($units as $u)
-                        <div id="accordion">
-                            <div class="card">
-                                <div class="card-header myGrid" id="headingOne">
-                                    <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$u->img}}"/>
-                                    <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        <h5 class="mb-0" style="float: left">Tema {{$u->id}}: {{$u->name}}</h5>
-                                    </button>
-                                    <button class="open-deleteDialog close" data-name="{{$u->name}}" data-id="{{$u->id}}" type="button" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header myGrid" id="headingOne">
+                                        <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$u->img}}"/>
+                                        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            <h5 class="mb-0" style="float: left">Tema {{$u->id}}: {{$u->name}}</h5>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                            @foreach($u->questions as $q)
-                            
-                                <img width="20%" src="{{ URL::to('../') }}/storage/app/public/{{$q->photo_url}}"/>
-                                <div>{{$q->question}}</div>
-                                <div>
-                                    {{$q->answer_a}}
-                                </div>
-                                <div>
-                                    {{$q->answer_b}}
-                                </div>
-                                <div>
-                                    {{$q->answer_c}}
-                                </div>
-                                <select>
-                                    <option>{{$q->correct_answer}}</option>
-                                </select>
-                                <div>{{$q->unit_id}}</div>
-                            @endforeach
-                        </div>  
+                                @foreach($u->questions as $q)
+                                    <div class="testsGrid">
+                                        <div class="testImage">
+                                            <img width="100%" src="{{ URL::to('../') }}/storage/app/public/{{$q->photo_url}}"/>
+                                        </div>
+                                        <div class="testContent">
+                                            <div>
+                                                <b>{{$q->question}}</b>
+                                            </div>
+                                            <div>
+                                                <p>a){{$q->answer_a}}</p>
+                                            </div>
+                                            <div>
+                                                <p>a){{$q->answer_b}}</p>
+                                            </div>
+                                            <div>
+                                                <p>a){{$q->answer_c}}</p>
+                                            </div>
+                                            <div>
+                                                <p>Opción correcta: {{$q->correct_answer}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>  
                         @endforeach
                     @endif
                 </div>

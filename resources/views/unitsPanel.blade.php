@@ -24,7 +24,7 @@ $i = 1
 
 
 @section('content')
-<div class="container">
+<div class="container-xl">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -35,16 +35,34 @@ $i = 1
                             <input required type="text" class="form-control" placeholder="Introduce el nombre del tema" name="name" aria-describedby="basic-addon2">
                             <div class="input-group-append">
                                 <input type="submit" class="btn btn-outline-secondary" type="button" value="Buscar"/>
-                                <div class="dropdown">
-                                    <input class="btn btn-outline-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="Añadir" />
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                      <a class="dropdown-item" data-toggle="modal" data-target="#addModal" href="">Tema</a>
-                                      <a class="dropdown-item" data-toggle="modal" data-target="#addModalContent" href="">Contenido</a>
-                                    </div>
+                                <input class="btn btn-outline-secondary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" value="Añadir" />
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" data-toggle="modal" data-target="#addModal" href="">Tema</a>
+                                    <a class="dropdown-item" data-toggle="modal" data-target="#addModalContent" href="">Contenido</a>
                                 </div>
                             </div>
                         </div>
                     </form>
+                    @if (session('error'))
+                        <div class="col-sm-12">
+                            <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                        </div>
+                    @endif
+                    @if (session('success'))
+                        <div class="col-sm-12">
+                            <div class="alert  alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+                        </div>
+                    @endif
                     @if(isset($unit))
                         @foreach($unit as $response)
                             <div id="accordion">
@@ -79,31 +97,31 @@ $i = 1
                                     <div class="card-header myGrid" id="headingOne">
                                         <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$u->img}}"/>
                                         <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            <h5 class="mb-0" style="float: left">Tema {{$u->id}}: {{$u->name}}</h5>
+                                            <h5 class="mb-0" style="float: left" >Tema {{$u->id}}: {{$u->name}}</h5>
                                         </button>
-                                        <input class="btn btn-outline-primary" type="button" value="Modificar"/>
-                                        <button class="open-deleteDialog close" data-name="{{$u->name}}" data-id="{{$u->id}}" type="button" aria-label="Close">
+                                        <input class="open-editDialog btn btn-outline-primary" type="button" data-id="{{$u->id}}" data-name="{{$u->name}}" data-image="{{ URL::to('../') }}/storage/app/public/{{$u->img}}" value="Modificar"/>
+                                        <button class="open-deleteDialog close" data-name="{{$u->name}}" data-id="{{$u->id}}" data-image="{{$u->img}}" type="button" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     @foreach($u->contents as $uc)
-                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                                        <div class="card-body">
-                                        <div class="itemGrid">
-                                            <b>{{$u->id}}.{{$i++}} {{$uc->name}}</b>
-                                            <button class="open-deleteContent close" type="button" data-name="{{$uc->name}}" data-id="{{$uc->id}}">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
+                                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                            <div class="card-body">
+                                            <div class="itemGrid">
+                                                <b>{{$u->id}}.{{$i++}} {{$uc->name}}</b>
+                                                <button class="open-deleteContent close" type="button" data-name="{{$uc->name}}" data-id="{{$uc->id}}">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="contenedor">
+                                                <p>{{$uc->content_unit}}</p>
+                                                <img class="contentImg" width="100%" src="{{ URL::to('../') }}/storage/app/public/{{$uc->img}}"/>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <input type="submit" class="btn btn-light" value="Modificar"/>
+                                            </div>
+                                            </div>
                                         </div>
-                                        <div class="contenedor">
-                                            <p>@php echo $uc->content_unit @endphp</p>
-                                            <img class="contentImg" width="100%" src="{{ URL::to('../') }}/storage/app/public/{{$uc->img}}"/>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <input type="submit" class="btn btn-light" value="Modificar"/>
-                                        </div>
-                                        </div>
-                                    </div>
                                     @endforeach 
                                 </div>
                             </div>
@@ -133,7 +151,7 @@ $i = 1
                     <p>Titulo: </p>
                   </div>
                   <div class="form-group mx-sm-3 mb-2">
-                    <input type="text" class="form-control" placeholder="Titulo" name="name" required>
+                    <input type="text" class="form-control" placeholder="Titulo" name="name" maxlength="50" required>
                   </div>
                   <div class="form-group mb-2">
                     <p>Imagen:</p><img id="uploadPreview" style="max-width: 250px; display:block; margin:auto;"/>
@@ -176,13 +194,13 @@ $i = 1
                     <p>Titulo: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input type="text" class="form-control" placeholder="Titulo" name="name" required>
+                    <input type="text" class="form-control" placeholder="Titulo" name="name" maxlength="50" required>
                 </div>
                 <div class="form-group mb-2">
                     <p>Imagen:</p><img id="uploadPreview" style="max-width: 250px; display:block; margin:auto;"/>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input name="img" type="file" id="uploadImage" class="form-control-file" accept="image/*" required onchange="PreviewImage();">
+                    <input name="img" type="file" id="uploadImage" class="form-control-file" accept="image/*" required onchange="PreviewImage()">
                 </div>
                 <div class="form-group mb-2">
                     <p>Texto: </p>
@@ -191,8 +209,8 @@ $i = 1
                     <textarea name="content_unit"> </textarea>
                       <script>
                         tinymce.init({
-                        selector: 'textarea',
-                       toolbar_drawer: 'floating',
+                            selector: 'textarea',
+                            toolbar_drawer: 'floating',
                         });
                       </script>
                 </div>     
@@ -208,9 +226,85 @@ $i = 1
 </div>
 
 {{--Modal for update a unit--}}
-
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar tema</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{{ action('UnitController@updateUnit') }}" role="form" enctype="multipart/form-data">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="form-group mb-2">
+                    <p>Titulo: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Titulo" id="name" name="name" maxlength="50" required>
+                </div>
+                <div class="form-group mb-2">
+                    <p>Imagen actual:</p>
+                    <img width="20%" id="img" name="img" style="max-width: 250px; display:block; margin:auto"/>
+                </div>
+                <div>
+                    <p>Nueva imagen: </p><img id="previewHolder" width="250px" height="250px" style="max-width: 250px; display:block; margin:auto"/>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="file" accept="image/*" name="img" value="" id="filePhoto" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg">
+                </div>
+                <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
+                <div class="modal-footer">
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Editar"/>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
 
 {{--Modal for update a unit_content--}}
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar tema</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{{ action('UnitController@updateUnit') }}" role="form" enctype="multipart/form-data">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="form-group mb-2">
+                    <p>Titulo: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Titulo" id="name" name="name" maxlength="50" required>
+                </div>
+                <div class="form-group mb-2">
+                    <p>Imagen:</p><img id="uploadPreview" style="max-width: 250px; display:block; margin:auto;"/>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input name="img" type="file" id="uploadImage" class="form-control-file" accept="image/*" required onchange="PreviewImage();">
+                </div>
+                <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
+                <div class="modal-footer">
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Añadir"/>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
 
 {{--Modal for delete a unit--}}
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

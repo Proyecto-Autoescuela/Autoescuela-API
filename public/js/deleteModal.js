@@ -6,7 +6,7 @@ $(document).ready(function(){
         console.log( userID);
         $(".modal-body #userID").val( userID );
         var userName = $(this).data('name');
-        $(".modal-body #userName").text("¿Quiéres eliminar a " + userName  + "?");
+        $(".modal-body #userName").text("¿Quiéres eliminar " + userName  + "?");
     });
 
     $('.open-deleteContent').click(function(){
@@ -15,7 +15,7 @@ $(document).ready(function(){
         $(".modal-body #contentID").val( userID );
         console.log(userID);
         var userName = $(this).data('name');
-        $(".modal-body #contentName").text("¿Quiéres eliminar a " + userName  + "?");
+        $(".modal-body #contentName").text("¿Quiéres eliminar " + userName  + "?");
     });
 
     $('.deleteUser').click(function() {

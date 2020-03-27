@@ -18,7 +18,7 @@
 @php( $students = \App\Student::all())
 
 @section('content')
-<div class="container">
+<div class="container-xl">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -54,14 +54,35 @@
                                   </tr>
                                 </thead>
                                 <tbody>
+                                    @if (session('error'))
+                                        <div class="col-sm-12">
+                                            <div class="alert  alert-danger alert-dismissible fade show" role="alert">
+                                                {{ session('error') }}
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    @if (session('success'))
+                                        <div class="col-sm-12">
+                                            <div class="alert  alert-success alert-dismissible fade show" role="alert">
+                                                {{ session('success') }}
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                            </div>
+                                        </div>
+                                    @endif
                                     @if(isset($student))
-                                        @foreach($student as $response)
-                                            <tr>
+                                        <input type="button" class="btn btn-outline-secondary btn-block buttonBack" value="Volver" onclick="location.href = '{{ route('users') }}'"/>
+                                        @foreach($student as $response) 
+                                            <tr id="table">
                                                 <th scope="row">{{$response->id}}</th>
-                                                <td><p data-editable>{{$response->name}}</p></td>
-                                                <td><p data-editable>{{$response->email}}</p></td>
-                                                <td><p>{{$response->getTeacherName($response->id)}}</p></td>
-                                                <td><p data-editableSelect>{{$response->license}}</p></td>
+                                                <td><p id="name" class="open-editDialog cursor"data-id="{{$response->id}}" data-name="{{$response->name}}" data-email="{{$response->email}}" data-teacher_id="{{$response->teacher_id}}" data-license="{{$response->license}}">{{$response->name}}</p></td>
+                                                <td><p id="email" class="open-editDialog cursor" data-id="{{$response->id}}" data-name="{{$response->name}}" data-email="{{$response->email}}" data-teacher_id="{{$response->teacher_id}}" data-license="{{$response->license}}">{{$response->email}}</p></td>
+                                                <td><p id="teacher_id" class="open-editDialog cursor" data-id="{{$response->id}}" data-name="{{$response->name}}" data-email="{{$response->email}}" data-teacher_id="{{$response->teacher_id}}" data-license="{{$response->license}}">{{$response->getTeacherName($response->id)}}</p></td>
+                                                <td><p id="license" class="open-editDialog cursor" data-id="{{$response->id}}" data-name="{{$response->name}}" data-email="{{$response->email}}" data-teacher_id="{{$response->teacher_id}}" data-license="{{$response->license}}">{{$response->license}}</p></td>
                                                 <td>
                                                     <button class="open-deleteDialog close" data-name="{{$response->name}}" data-id="{{$response->id}}" type="button" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
@@ -73,30 +94,10 @@
                                         @foreach($students as $s)
                                             <tr id="table">
                                                 <th scope="row">{{$s->id}}</th>
-                                                <td><p id="name" editable data-id="{{$s->id}}">{{$s->name}}</p></td>
-                                                <td><p id="email" editable data-id="{{$s->id}}">{{$s->email}}</p></td>
-                                                <td>
-                                                    <select id="teacher_id" class="custom-select">
-                                                        <option disabled selected>{{$s->getTeacherName($s->id)}}</option>
-                                                        @foreach($teachers as $t)
-                                                            <option value="{{$t->id}}" data-id="{{$s->id}}">{{$t->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select id="license" class="custom-select">
-                                                        <option disabled selected>{{$s->license}}</option>
-                                                        <option value="A" data-id="{{$s->id}}">A</option>
-                                                        <option value="A1" data-id="{{$s->id}}">A1</option>
-                                                        <option value="A2" data-id="{{$s->id}}">A2</option>
-                                                        <option value="B" data-id="{{$s->id}}">B</option>
-                                                        <option value="B+E" data-id="{{$s->id}}">B+E</option>
-                                                        <option value="C" data-id="{{$s->id}}">C</option>
-                                                        <option value="C+E" data-id="{{$s->id}}">C+E</option>
-                                                        <option value="D" data-id="{{$s->id}}">D</option>
-                                                        <option value="D+E" data-id="{{$s->id}}">D+E</option>
-                                                    </select>
-                                                </td>
+                                                <td><p id="name" class="open-editDialog cursor"data-id="{{$s->id}}" data-name="{{$s->name}}" data-email="{{$s->email}}" data-teacher_id="{{$s->teacher_id}}" data-license="{{$s->license}}">{{$s->name}}</p></td>
+                                                <td><p id="email" class="open-editDialog cursor" data-id="{{$s->id}}" data-name="{{$s->name}}" data-email="{{$s->email}}" data-teacher_id="{{$s->teacher_id}}" data-license="{{$s->license}}">{{$s->email}}</p></td>
+                                                <td><p id="teacher_id" class="open-editDialog cursor" data-id="{{$s->id}}" data-name="{{$s->name}}" data-email="{{$s->email}}" data-teacher_id="{{$s->teacher_id}}" data-license="{{$s->license}}">{{$s->getTeacherName($s->id)}}</p></td>
+                                                <td><p id="license" class="open-editDialog cursor" data-id="{{$s->id}}" data-name="{{$s->name}}" data-email="{{$s->email}}" data-teacher_id="{{$s->teacher_id}}" data-license="{{$s->license}}">{{$s->license}}</p></td>
                                                 <td>
                                                     <button class="open-deleteDialog close" data-name="{{$s->name}}" data-id="{{$s->id}}" type="button" aria-label="Close">
                                                         <span aria-hidden="true">&times;</span>
@@ -131,19 +132,19 @@
                   <p>Nombre: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                <input type="text" class="form-control" placeholder="Nombre" name="name" required>
+                <input type="text" class="form-control" placeholder="Nombre" name="name" maxlength="40" required>
                 </div>
                 <div class="form-group mb-2">
                   <p>Correo: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input type="email" class="form-control" placeholder="Correo" name="email" required>
+                    <input type="email" class="form-control" placeholder="Correo" name="email"  maxlength="50" required>
                 </div>
                 <div class="form-group mb-2">
                     <p>Contraseña: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input type="text" class="form-control" placeholder="Contraseña" name="password" required>
+                    <input type="text" class="form-control" placeholder="Contraseña" name="password" minlength="5" required>
                 </div>
                 <div class="form-group mb-2">
                     <p>Profesor: </p>
@@ -173,6 +174,65 @@
                 <div class="modal-footer">
                     <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
                     <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Añadir"/>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+{{--Modal for edit--}}
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Editar alumno</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="{{ action('StudentController@updateStudent') }}" role="form">
+                {{ csrf_field() }}
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" id="id" name="id" value="">
+                <div class="form-group mb-2">
+                    <p>Nombre: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" placeholder="Nombre" id="name" name="name" maxlength="40" required>
+                </div>
+                <div class="form-group mb-2">
+                    <p>Correo: </p>
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="email" class="form-control" placeholder="Correo" id="email" name="email" maxlength="50" required>
+                </div>
+                <div class="form-group mb-2">
+                    <p>Profesor: </p>
+                </div>
+                <select class="form-control mx-sm-3 mb-2" style="max-width: 27rem" id="teacher" name="teacher_id" required>
+                    @foreach($teachers as $t)
+                        <option value="{{$t->id}}">{{$t->id}} - {{$t->name}}</option>
+                    @endforeach
+                </select>
+                <div class="form-group mb-2">
+                    <p>Licencia: </p>
+                </div>
+                <select class="form-control mx-sm-3 mb-2" style="max-width: 27rem" id="license" name="license" required>
+                    <option>A</option>
+                    <option>A1</option>
+                    <option>A2</option>
+                    <option>B</option>
+                    <option>B+E</option>
+                    <option>C</option>
+                    <option>C+E</option>
+                    <option>D</option>
+                    <option>D+E</option>
+                </select>
+                <div class="modal-footer">
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-light" value="Cerrar" data-dismiss="modal"/>
+                    <input style="margin-top: 1rem" type="submit" class="btn btn-info" value="Editar"/>
                 </div>
             </form>
         </div>

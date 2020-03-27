@@ -13,7 +13,7 @@ class TestsTableSeeder extends Seeder
     {
         DB::table('questions')->insert([
             'photo_url' => 'ImagesTests/camion.png',
-            'question' => '¿Que es la MMA de un vehículo',
+            'question' => '¿Que es la MMA de un vehículo?',
             'answer_a' => 'La masa de vehículo',
             'answer_b' => 'La masa máxima autorizada para la utilización del vehículo',
             'answer_c' => 'La suma de las masas del vehículo de motor y del remolque arrastrado',

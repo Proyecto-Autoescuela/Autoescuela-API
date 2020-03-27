@@ -13,7 +13,7 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/deleteModal.js') }}" defer></script>
     <script src="{{ asset('js/previewImage.js') }}" defer></script>
-    <script src="{{ asset('js/editUpdate.js') }}" defer></script>
+    <script src="{{ asset('js/editModal.js') }}" defer></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

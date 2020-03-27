@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Teacher;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Hash;
 
 class TeacherController extends Controller 
 {
@@ -28,7 +29,7 @@ class TeacherController extends Controller
         ->get(['id', 'name', 'email']);
         if(count($response) > 0)
             return view('teachersPanel', ['teacher' => $response]);
-        else return view('teachersPanel')->withMessage('No Details found. Try to search again !');
+        else return redirect('/users/teachers')->with('error', 'No se han encontrado profesores con este nombre');
     }
     
     // Añadir profesor
@@ -63,7 +64,13 @@ class TeacherController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/users/teachers');
+        if($response['error_code'] == 200){
+            return redirect('/users/teachers')->with('success', 'Usuario añadido');
+        }else if($response['error_code'] == 500){
+            return redirect('/users/teachers')->with('error', 'Este correo ya esta en uso');
+        }else{
+            return redirect('/users/teachers')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
     // Editar profesor
@@ -87,27 +94,25 @@ class TeacherController extends Controller
             }else{
                 $teachers->email = $req->email;
             }
-            if(empty($req->password)){
-                $dataOk = false;
-                $error_msg = "Paswword no puede estar vacio";
-            }else{
-                $teachers->password = $req->password;
-            }
             if(!$dataOk){
                 $response = array('error_code' => 400, 'error_msg' => $error_msg);
             }else{
                 try{
                     $teachers->name = $req->input('name');
                     $teachers->email = $req->input('email') ;
-                    $pass = Hash::make($req->password);
-                    $teachers->password = $pass;
                     $teachers->save();
                     $response = array('error_code' => 200, 'error_msg' => '');
                 }catch(\Exception $e){
                     $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
                 }
             }
-            return view('teachersPanel');
+            if($response['error_code'] == 200){
+                return redirect('/users/teachers')->with('success', 'Usuario editado');
+            }else if($response['error_code'] == 500){
+                return redirect('/users/teachers')->with('error', 'Error al editar');
+            }else{
+                return redirect('/users/teachers')->with('error', 'No se pudo procesar la petición');
+            }
         }
     }
 
@@ -127,7 +132,13 @@ class TeacherController extends Controller
                 $response = array('error_code' => 500, 'error_msg' => $e->getMessage());
             }
         }
-        return redirect('/users/teachers');
+        if($response['error_code'] == 200){
+            return redirect('/users/teachers')->with('success', 'Usuario eliminado');
+        }else if($response['error_code'] == 500){
+            return redirect('/users/teachers')->with('error', 'Error al eliminar');
+        }else{
+            return redirect('/users/teachers')->with('error', 'No se pudo procesar la petición');
+        }
     }
 
     //Recover password
