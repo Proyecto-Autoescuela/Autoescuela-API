@@ -16,11 +16,13 @@
 @endsection
 
 @php 
-$i = 1
- @endphp
+$i = 1;
+$o = 1
+@endphp
+
 @php
  $units = \App\Unit::all() 
- @endphp
+@endphp
 
 
 @section('content')
@@ -64,51 +66,25 @@ $i = 1
                         </div>
                     @endif
                     @if(isset($unit))
+                        <input type="button" class="btn btn-outline-secondary btn-block buttonBack" value="Volver" onclick="location.href = '{{ route('units') }}'"/>
                         @foreach($unit as $response)
-                            <div id="accordion">
-                                <div class="card">
-                                    <div class="card-header" id="headingOne">
-                                        <h5 class="mb-0">
-                                        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            <h5>Tema {{$response->id}}: {{$response->name}}       <img width="10%" src="{{ URL::to('../') }}/storage/app/public/{{$response->img}}"/></h5>
-                                            <button class="open-deleteDialog close" data-name="{{$response->name}}" data-id="{{$response->id}}" type="button" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </button>
-                                        </h5>
-                                    </div>
-                                    @foreach($response->contents as $uc)
-                                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                                        <div class="card-body">
-                                            <p style="font-weight: bold">{{$response->id}}.{{$i++}} {{$uc->name}}</p>
-                                            <img width="40%"  src="{{ URL::to('../') }}/storage/app/public/{{$uc->img}}"/>
-                                            <p>{{$uc->content_unit}}</p>
-                                        </div>
-                                    </div>
-                                    @endforeach 
-                                </div>
-                            </div>
-                            <input type="hidden"{{$i = 1}} />
-                        @endforeach
-                    @else
-                        @foreach($units as $u)
-                            <div id="accordion">
+                             <div id="accordion{{$o}}">
                                 <div class="card">
                                     <div class="card-header myGrid" id="headingOne">
-                                        <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$u->img}}"/>
-                                        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                            <h5 class="mb-0" style="float: left" >Tema {{$u->id}}: {{$u->name}}</h5>
+                                        <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$response->img}}"/>
+                                        <button class="btn" data-toggle="collapse" data-target="#collapse{{$o}}" aria-expanded="true" aria-controls="collapse">
+                                            <h5 class="mb-0" style="float: left" >Tema {{$response->id}}: {{$response->name}}</h5>
                                         </button>
-                                        <input class="open-editDialog btn btn-outline-primary" type="button" data-id="{{$u->id}}" data-name="{{$u->name}}" data-image="{{ URL::to('../') }}/storage/app/public/{{$u->img}}" value="Modificar"/>
-                                        <button class="open-deleteDialog close" data-name="{{$u->name}}" data-id="{{$u->id}}" data-image="{{$u->img}}" type="button" aria-label="Close">
+                                        <input class="open-editDialog btn btn-outline-primary" type="button" data-id="{{$response->id}}" data-name="{{$response->name}}" data-image="{{ URL::to('../') }}/storage/app/public/{{$response->img}}" value="Modificar"/>
+                                        <button class="open-deleteDialog close" data-name="{{$response->name}}" data-id="{{$response->id}}" data-image="{{$response->img}}" type="button" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    @foreach($u->contents as $uc)
-                                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                    @foreach($response->contents as $uc)
+                                        <div id="collapse{{$o}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion{{$o}}">
                                             <div class="card-body">
                                             <div class="itemGrid">
-                                                <b>{{$u->id}}.{{$i++}} {{$uc->name}}</b>
+                                                <b>{{$response->id}}.{{$i++}} {{$uc->name}}</b>
                                                 <button class="open-deleteContent close" type="button" data-name="{{$uc->name}}" data-id="{{$uc->id}}">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -126,7 +102,47 @@ $i = 1
                                 </div>
                             </div>
                             <input type="hidden"{{$i = 1}} />
+                            <input type="hidden"{{$o++}} />
                         @endforeach
+                    @else
+                        @foreach($units as $u)
+                            <div id="accordion{{$o}}">
+                                <div class="card">
+                                    <div class="card-header myGrid" id="headingOne">
+                                        <img width="80%" src="{{ URL::to('../') }}/storage/app/public/{{$u->img}}"/>
+                                        <button class="btn" data-toggle="collapse" data-target="#collapse{{$o}}" aria-expanded="true" aria-controls="collapse">
+                                            <h5 class="mb-0" style="float: left" >Tema {{$u->id}}: {{$u->name}}</h5>
+                                        </button>
+                                        <input class="open-editDialog btn btn-outline-primary" type="button" data-id="{{$u->id}}" data-name="{{$u->name}}" data-image="{{ URL::to('../') }}/storage/app/public/{{$u->img}}" value="Modificar"/>
+                                        <button class="open-deleteDialog close" data-name="{{$u->name}}" data-id="{{$u->id}}" data-image="{{$u->img}}" type="button" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    @foreach($u->contents as $uc)
+                                    <div id="collapse{{$o}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion{{$o}}">
+                                        <div class="card-body">
+                                        <div class="itemGrid">
+                                            <b>{{$u->id}}.{{$i++}} {{$uc->name}}</b>
+                                            <button class="open-deleteContent close" type="button" data-name="{{$uc->name}}" data-id="{{$uc->id}}">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="contenedor">
+                                            {{$uc->content_unit}}
+                                            <img class="contentImg" width="100%" src="{{ URL::to('../') }}/storage/app/public/{{$uc->img}}"/>
+                                        </div>
+                                        <div class="modal-footer">
+                                            {{-- <input type="submit" class="btn btn-light" value="Modificar"/> --}}
+                                        </div>
+                                        </div>
+                                    </div>
+                                    @endforeach 
+                                </div>
+                            </div>
+                            <input type="hidden"{{$i = 1}} />
+                            <input type="hidden"{{$o++}} />
+                        @endforeach
+                        
                     @endif
                 </div>
             </div>
@@ -197,22 +213,16 @@ $i = 1
                     <input type="text" class="form-control" placeholder="Titulo" name="name" maxlength="50" required>
                 </div>
                 <div class="form-group mb-2">
-                    <p>Imagen:</p><img id="uploadPreview" style="max-width: 250px; display:block; margin:auto;"/>
+                    <p>Imagen:</p><img id="previewHolder" width="100" height="100px" style="max-width: 200px; display:block; margin:auto"/>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <input name="img" type="file" id="uploadImage" class="form-control-file" accept="image/*" required onchange="PreviewImage()">
+                    <input type="file" accept="image/*" name="img" id="filePhoto" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg">
                 </div>
                 <div class="form-group mb-2">
                     <p>Texto: </p>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
-                    <textarea name="content_unit"> </textarea>
-                      <script>
-                        tinymce.init({
-                            selector: 'textarea',
-                            toolbar_drawer: 'floating',
-                        });
-                      </script>
+                    <textarea name="content_unit" > </textarea>
                 </div>     
                 <input name="_token" type="hidden" value="{{ csrf_token() }}"/>
                 <div class="modal-footer">
@@ -251,7 +261,7 @@ $i = 1
                     <img width="20%" id="img" name="img" style="max-width: 250px; display:block; margin:auto"/>
                 </div>
                 <div>
-                    <p>Nueva imagen: </p><img id="previewHolder" width="250px" height="250px" style="max-width: 250px; display:block; margin:auto"/>
+                    <p>Nueva imagen: </p><img id="previewHolder"  width="150px" height="150px" style="max-width: 150px; display:block; margin:auto"/>
                 </div>
                 <div class="form-group mx-sm-3 mb-2">
                     <input type="file" accept="image/*" name="img" value="" id="filePhoto" class="required borrowerImageFile" data-errormsg="PhotoUploadErrorMsg">
@@ -267,7 +277,7 @@ $i = 1
     </div>
 </div>
 
-{{--Modal for update a unit_content--}}
+{{-- Modal for update a unit_content
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -303,7 +313,7 @@ $i = 1
         </div>
       </div>
     </div>
-</div>
+</div> --}}
 
 
 {{--Modal for delete a unit--}}

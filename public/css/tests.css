@@ -33,13 +33,13 @@
 
 .exit{
     position:absolute;
-    right: 6%;
+    right: 4%;
 }
 
 .testImage{
     padding: 1rem;
 }
 
-.testContent{
-
+.buttonBack{
+    margin-bottom: 1rem;
 }

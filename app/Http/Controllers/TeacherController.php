@@ -135,7 +135,7 @@ class TeacherController extends Controller
         if($response['error_code'] == 200){
             return redirect('/users/teachers')->with('success', 'Usuario eliminado');
         }else if($response['error_code'] == 500){
-            return redirect('/users/teachers')->with('error', 'Error al eliminar');
+            return redirect('/users/teachers')->with('error', 'Este profesor tiene alumnos asignados y no se puede eliminar');
         }else{
             return redirect('/users/teachers')->with('error', 'No se pudo procesar la petición');
         }

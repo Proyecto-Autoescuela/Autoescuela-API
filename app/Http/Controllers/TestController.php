@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Test;
 use App\Question;
 use App\Student;
+use App\Unit;
 use Illuminate\Support\Facades\Input;
 
 class TestController extends Controller{
@@ -237,11 +238,11 @@ class TestController extends Controller{
         }
     }
 
-    // Añadir Test
+    // Editar Test
     public function updateTest(Request $req)
     {
         $test_id = $req->id;
-        $response = array('error_code' => 404, 'error_msg' => 'Estudiante '.$unit_id.' no encontrado');
+        $response = array('error_code' => 404, 'error_msg' => 'Estudiante '.$test_id.' no encontrado');
         $tests = Question::find($test_id);
         if(!empty($tests)){
             $dataOk = true;
@@ -282,12 +283,6 @@ class TestController extends Controller{
             }else{
                 $tests->correct_answer = $req->correct_answer;
             }
-            if(empty($req->unit_id)){
-                $dataOk = false;
-                $response['error_msg'] = 'unit_id is required';
-            }else{
-                $tests->unit_id = $req->unit_id;
-            }
             if(!$dataOk){
                 $response = array('error_code' => 400, 'error_msg' => $error_msg);
             }else{
@@ -299,7 +294,6 @@ class TestController extends Controller{
                     $tests->answer_b = $req->input('answer_b');
                     $tests->answer_c = $req->input('answer_c');
                     $tests->correct_answer = $req->input('correct_answer');
-                    $tests->unit_id = $req->input('unit_id');
                     $tests->save();
                     $response = array('error_code' => 200, 'error_msg' => '');
                 }
@@ -309,11 +303,11 @@ class TestController extends Controller{
             }
         }
         if($response['error_code'] == 200){
-            return redirect('/units')->with('success', 'Test editado');
+            return redirect('/tests')->with('success', 'Test editado');
         }else if($response['error_code'] == 500){
-            return redirect('/units')->with('error', 'Error al editar');
+            return redirect('/tests')->with('error', 'Error al editar');
         }else{
-            return redirect('/units')->with('error', 'No se pudo procesar la petición');
+            return redirect('/tests')->with('error', 'No se pudo procesar la petición');
         }
         }
     }
@@ -343,5 +337,15 @@ class TestController extends Controller{
         }
     }
 
+    public function listByName()
+    {   
+        $name = ucfirst(Input::get ('name'));
+        $response = array('error_code' => 404, 'error_msg' => 'Tema ' .$name. ' no encontrado');
+        $response = Unit::where('name','LIKE','%'.$name.'%')
+        ->get(['id', 'name', 'img']);
+        if(count($response) > 0)
+            return view('testsPanel', ['unit' => $response]);
+        else return redirect('/tests')->with('error', 'No se han encontrado temarios con este nombre');
+    }
 
 }
